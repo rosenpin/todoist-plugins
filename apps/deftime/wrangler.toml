@@ -1,0 +1,17 @@
+name = "deftime-for-todoist"
+main = "dist/index.js"
+compatibility_date = "2023-12-01"
+
+[env.development]
+name = "deftime-for-todoist-dev"
+
+[env.production]
+name = "deftime-for-todoist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "deftime-users"
+database_id = "a8ba9cc4-0ba9-450b-9cea-6ea2ccf141f1"
+
+[vars]
+REDIRECT_URI = "https://deftime-for-todoist.real-tomer-rosenfeld.workers.dev/redirect"

@@ -1,0 +1,72 @@
+name: Deploy Todoist Services
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build all packages
+      run: npm run build
+      
+    - name: Run tests
+      run: npm test
+
+  deploy-production:
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    environment: production
+    
+    strategy:
+      matrix:
+        app: [deftime, done, durations]
+        
+    steps:
+    - name: Deploy ${{ matrix.app }} to Cloudflare Workers
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        workingDirectory: apps/${{ matrix.app }}
+        command: deploy --env production
+
+  deploy-staging:
+    if: github.event_name == 'pull_request'
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    environment: staging
+    
+    strategy:
+      matrix:
+        app: [deftime, done, durations]
+        
+    steps:
+    - name: Deploy ${{ matrix.app }} to Cloudflare Workers (staging)
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        workingDirectory: apps/${{ matrix.app }}
+        command: deploy --env development

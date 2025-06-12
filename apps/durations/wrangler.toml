@@ -1,0 +1,17 @@
+name = "durations-for-todoist"
+main = "dist/index.js"
+compatibility_date = "2023-12-01"
+
+[env.development]
+name = "durations-for-todoist-dev"
+
+[env.production]
+name = "durations-for-todoist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "durations-users"
+database_id = "5f2e3682-3f6b-40a4-967f-6731fc9dd772"
+
+[vars]
+REDIRECT_URI = "https://durations-for-todoist.real-tomer-rosenfeld.workers.dev/redirect"

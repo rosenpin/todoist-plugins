@@ -1,0 +1,24 @@
+{
+  "name": "@apps/durations",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "echo \"No tests yet\""
+  },
+  "dependencies": {
+    "hono": "^3.11.0",
+    "@shared/todoist-client": "*",
+    "@shared/auth": "*",
+    "@shared/db": "*",
+    "@shared/utils": "*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.0.0",
+    "typescript": "^5.3.0",
+    "wrangler": "^3.0.0"
+  }
+}

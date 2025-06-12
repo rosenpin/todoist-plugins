@@ -1,0 +1,17 @@
+name = "done-for-todoist"
+main = "dist/index.js"
+compatibility_date = "2023-12-01"
+
+[env.development]
+name = "done-for-todoist-dev"
+
+[env.production]
+name = "done-for-todoist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "done-users"
+database_id = "c8310acd-fda7-4332-a503-5cb4b7f814cb"
+
+[vars]
+REDIRECT_URI = "https://done-for-todoist.real-tomer-rosenfeld.workers.dev/redirect"
