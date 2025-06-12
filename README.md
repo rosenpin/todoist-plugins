@@ -9,21 +9,21 @@ A collection of productivity-enhancing integrations for Todoist, built with Type
 Automatically sets default times for tasks without due times. Perfect for throwing tasks at Todoist without worrying about scheduling.
 
 - **Features**: Timezone-aware scheduling between 8-11 AM
-- **URL**: [deftime-for-todoist.workers.dev](https://deftime-for-todoist.workers.dev)
+- **URL**: [https://deftime-for-todoist.real-tomer-rosenfeld.workers.dev/](https://deftime-for-todoist.real-tomer-rosenfeld.workers.dev)
 
 ### [Done For Todoist](./apps/done/)
 
 Automatically adds ~~strikethrough~~ formatting to completed tasks in Google Calendar.
 
 - **Features**: Visual completion feedback, removes time components
-- **URL**: [done-for-todoist.workers.dev](https://done-for-todoist.workers.dev)
+- **URL**: [https://done-for-todoist.real-tomer-rosenfeld.workers.dev/](https://done-for-todoist.real-tomer-rosenfeld.workers.dev)
 
 ### [Durations For Todoist](./apps/durations/)
 
 Sets Google Calendar event durations based on Todoist labels.
 
 - **Features**: Label-based duration setting (15m, 30m, 1h, etc.)
-- **URL**: [durations-for-todoist.workers.dev](https://durations-for-todoist.workers.dev)
+- **URL**: [https://durations-for-todoist.real-tomer-rosenfeld.workers.dev/](https://done-for-todoist.real-tomer-rosenfeld.workers.dev)
 
 ## 🏗️ Architecture
 
@@ -63,8 +63,8 @@ todoist-monorepo/
 
 ```bash
 # Clone and install
-git clone https://github.com/rosenpin/todoist-monorepo
-cd todoist-monorepo
+git clone https://github.com/rosenpin/todoist-plugins
+cd todoist-plugins
 npm install
 
 # Build all packages
@@ -81,37 +81,6 @@ npm run dev
 npm test
 ```
 
-## 🚀 Deployment
-
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
-
-Quick start:
-
-```bash
-# Create D1 databases
-wrangler d1 create deftime-users
-wrangler d1 create done-users
-wrangler d1 create durations-users
-
-# Apply schema
-wrangler d1 execute deftime-users --file=./database/schema.sql
-wrangler d1 execute done-users --file=./database/schema.sql
-wrangler d1 execute durations-users --file=./database/schema.sql
-
-# Deploy
-npm run build
-cd apps/deftime && wrangler deploy
-cd ../done && wrangler deploy
-cd ../durations && wrangler deploy
-```
-
-## 🔒 Privacy & Security
-
-- **No task storage**: We don't store your task content or personal data
-- **OAuth only**: Only your Todoist access token is stored securely
-- **Real-time processing**: All operations happen via Todoist API
-- **Easy cleanup**: Log out to delete all stored data
-
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -119,10 +88,6 @@ cd ../durations && wrangler deploy
 3. Make your changes
 4. Add tests if applicable
 5. Submit a pull request
-
-## 📄 License
-
-Unlicense - see [LICENSE](LICENSE) file for details.
 
 ## 💝 Support
 

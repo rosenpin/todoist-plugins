@@ -1,5 +1,5 @@
 name = "done-for-todoist"
-main = "dist/index.js"
+main = "src/index.ts"
 compatibility_date = "2023-12-01"
 
 [env.development]
@@ -14,4 +14,5 @@ database_name = "done-users"
 database_id = "c8310acd-fda7-4332-a503-5cb4b7f814cb"
 
 [vars]
+CLIENT_ID = "99a7f3be09944fdea884b13530978e57"
 REDIRECT_URI = "https://done-for-todoist.real-tomer-rosenfeld.workers.dev/redirect"
