@@ -93,6 +93,7 @@ export class DefTimeLogic {
       // Update the task with new time
       await this.todoist.updateTask(taskId, {
         due: {
+          date: task.due!.date,
           datetime: newDateTime,
           timezone: task.due?.timezone
         }

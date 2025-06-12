@@ -52,7 +52,7 @@ export class TodoistClient {
       });
 
       if (response.ok) {
-        const user = await response.json();
+        const user = await response.json() as any;
         return {
           id: user.id,
           email: user.email,
@@ -78,7 +78,7 @@ export class TodoistClient {
       throw new Error(`Failed to get user info: ${response.status}`);
     }
 
-    const data = await response.json();
+    const data = await response.json() as any;
     const user = data.user;
 
     return {
@@ -96,7 +96,7 @@ export class TodoistClient {
     const mappedTasks = tasksArray.map((task: any) => ({
       id: task.id,
       content: task.content,
-      project_id: task.project_id || task.projectId,
+      project_id: task.projectId,
       labels: task.labels,
       due: task.due && Object.keys(task.due).length > 0 ? {
         date: task.due.date,
@@ -113,7 +113,7 @@ export class TodoistClient {
     return {
       id: task.id,
       content: task.content,
-      project_id: task.project_id || task.projectId,
+      project_id: task.projectId,
       labels: task.labels,
       due: task.due && Object.keys(task.due).length > 0 ? {
         date: task.due.date,
