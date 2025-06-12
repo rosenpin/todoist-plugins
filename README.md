@@ -5,18 +5,21 @@ A collection of productivity-enhancing integrations for Todoist, built with Type
 ## 🚀 Services
 
 ### [DefTime For Todoist](./apps/deftime/)
+
 Automatically sets default times for tasks without due times. Perfect for throwing tasks at Todoist without worrying about scheduling.
 
 - **Features**: Timezone-aware scheduling between 8-11 AM
 - **URL**: [deftime-for-todoist.workers.dev](https://deftime-for-todoist.workers.dev)
 
 ### [Done For Todoist](./apps/done/)
+
 Automatically adds ~~strikethrough~~ formatting to completed tasks in Google Calendar.
 
 - **Features**: Visual completion feedback, removes time components
 - **URL**: [done-for-todoist.workers.dev](https://done-for-todoist.workers.dev)
 
 ### [Durations For Todoist](./apps/durations/)
+
 Sets Google Calendar event durations based on Todoist labels.
 
 - **Features**: Label-based duration setting (15m, 30m, 1h, etc.)
@@ -51,11 +54,13 @@ todoist-monorepo/
 ## 🛠️ Development
 
 ### Prerequisites
+
 - Node.js 18+
 - npm or yarn
 - Wrangler CLI
 
 ### Setup
+
 ```bash
 # Clone and install
 git clone https://github.com/rosenpin/todoist-monorepo
@@ -71,6 +76,7 @@ npm run dev
 ```
 
 ### Testing
+
 ```bash
 npm test
 ```
@@ -80,6 +86,7 @@ npm test
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
 
 Quick start:
+
 ```bash
 # Create D1 databases
 wrangler d1 create deftime-users
