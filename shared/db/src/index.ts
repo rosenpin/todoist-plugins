@@ -21,16 +21,7 @@ export class UserDatabase {
    * Initialize database tables
    */
   async init(): Promise<void> {
-    await this.db.exec(`
-      CREATE TABLE IF NOT EXISTS users (
-        user_id TEXT PRIMARY KEY,
-        access_token TEXT NOT NULL,
-        full_name TEXT NOT NULL,
-        mode TEXT DEFAULT 'undefined',
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
+    await this.db.exec(`CREATE TABLE IF NOT EXISTS users (user_id TEXT PRIMARY KEY, access_token TEXT NOT NULL, full_name TEXT NOT NULL, mode TEXT DEFAULT 'undefined', created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)`);
   }
 
   /**

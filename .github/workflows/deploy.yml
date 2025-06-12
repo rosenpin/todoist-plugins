@@ -44,6 +44,9 @@ jobs:
         app: [deftime, done, durations]
         
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
     - name: Deploy ${{ matrix.app }} to Cloudflare Workers
       uses: cloudflare/wrangler-action@v3
       with:
@@ -63,6 +66,9 @@ jobs:
         app: [deftime, done, durations]
         
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
     - name: Deploy ${{ matrix.app }} to Cloudflare Workers (staging)
       uses: cloudflare/wrangler-action@v3
       with:
