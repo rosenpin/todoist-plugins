@@ -15,4 +15,4 @@ database_id = "c8310acd-fda7-4332-a503-5cb4b7f814cb"
 
 [vars]
 CLIENT_ID = "99a7f3be09944fdea884b13530978e57"
-REDIRECT_URI = "https://done-for-todoist.real-tomer-rosenfeld.workers.dev/redirect"
+REDIRECT_URI = "https://done.todoist.rosenpin.io/redirect"

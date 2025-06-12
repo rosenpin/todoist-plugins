@@ -15,4 +15,4 @@ database_id = "a8ba9cc4-0ba9-450b-9cea-6ea2ccf141f1"
 
 [vars]
 CLIENT_ID = "de8f833998b943e7a41cbb5018c44d2d"
-REDIRECT_URI = "https://deftime-for-todoist.real-tomer-rosenfeld.workers.dev/redirect"
+REDIRECT_URI = "https://deftime.todoist.rosenpin.io/redirect"

@@ -96,11 +96,11 @@ export class TodoistClient {
     const mappedTasks = tasksArray.map((task: any) => ({
       id: task.id,
       content: task.content,
-      project_id: task.projectId,
+      project_id: task.project_id || task.projectId,
       labels: task.labels,
-      due: task.due ? {
+      due: task.due && Object.keys(task.due).length > 0 ? {
         date: task.due.date,
-        datetime: task.due.datetime || undefined,
+        datetime: task.due.datetime || task.due.date, // fallback to date if datetime is missing
         timezone: task.due.timezone || undefined
       } : undefined
     }));
@@ -113,11 +113,11 @@ export class TodoistClient {
     return {
       id: task.id,
       content: task.content,
-      project_id: task.projectId,
+      project_id: task.project_id || task.projectId,
       labels: task.labels,
-      due: task.due ? {
+      due: task.due && Object.keys(task.due).length > 0 ? {
         date: task.due.date,
-        datetime: task.due.datetime || undefined,
+        datetime: task.due.datetime || task.due.date, // fallback to date if datetime is missing
         timezone: task.due.timezone || undefined
       } : undefined
     };

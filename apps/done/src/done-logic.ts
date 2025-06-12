@@ -1,4 +1,4 @@
-import { TodoistClient, TodoistTask } from '@shared/todoist-client';
+import { TodoistClient } from '@shared/todoist-client';
 import { Logger } from '@shared/utils';
 
 export class DoneLogic {
@@ -55,12 +55,12 @@ export class DoneLogic {
   async handleTaskCompleted(taskId: string): Promise<void> {
     try {
       const task = await this.todoist.getTask(taskId);
-      
+
       // Add strikethrough to task content
       if (!this.isAlreadyStrikethrough(task.content)) {
         const newContent = this.addStrikethrough(task.content);
         Logger.info(`Adding strikethrough to task: "${task.content}" -> "${newContent}"`);
-        
+
         await this.todoist.updateTask(taskId, {
           content: newContent
         });
@@ -69,10 +69,12 @@ export class DoneLogic {
       }
 
       // Remove time from due date if it exists
-      if (task.due?.datetime && this.hasTime(task.due.datetime)) {
-        const newDate = this.removeTimeFromDate(task.due.datetime);
-        Logger.info(`Removing time from task due date: ${task.due.datetime} -> ${newDate}`);
-        
+      const dateToCheck = task.due?.datetime || task.due?.date;
+
+      if (dateToCheck && this.hasTime(dateToCheck)) {
+        const newDate = this.removeTimeFromDate(dateToCheck);
+        Logger.info(`Removing time from task due date: ${dateToCheck} -> ${newDate}`);
+
         await this.todoist.updateTask(taskId, {
           due: {
             date: newDate
@@ -93,12 +95,12 @@ export class DoneLogic {
   async handleTaskUncompleted(taskId: string): Promise<void> {
     try {
       const task = await this.todoist.getTask(taskId);
-      
+
       // Remove strikethrough from task content
       if (this.isAlreadyStrikethrough(task.content)) {
         const newContent = this.removeStrikethrough(task.content);
         Logger.info(`Removing strikethrough from task: "${task.content}" -> "${newContent}"`);
-        
+
         await this.todoist.updateTask(taskId, {
           content: newContent
         });

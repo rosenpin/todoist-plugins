@@ -9,21 +9,21 @@ A collection of productivity-enhancing integrations for Todoist, built with Type
 Automatically sets default times for tasks without due times. Perfect for throwing tasks at Todoist without worrying about scheduling.
 
 - **Features**: Timezone-aware scheduling between 8-11 AM
-- **URL**: [https://deftime-for-todoist.real-tomer-rosenfeld.workers.dev/](https://deftime-for-todoist.real-tomer-rosenfeld.workers.dev)
+- **URL**: [https://deftime.todoist.rosenpin.io](https://deftime.todoist.rosenpin.io)
 
 ### [Done For Todoist](./apps/done/)
 
 Automatically adds ~~strikethrough~~ formatting to completed tasks in Google Calendar.
 
 - **Features**: Visual completion feedback, removes time components
-- **URL**: [https://done-for-todoist.real-tomer-rosenfeld.workers.dev/](https://done-for-todoist.real-tomer-rosenfeld.workers.dev)
+- **URL**: [https://done.todoist.rosenpin.io](https://done.todoist.rosenpin.io)
 
 ### [Durations For Todoist](./apps/durations/)
 
 Sets Google Calendar event durations based on Todoist labels.
 
 - **Features**: Label-based duration setting (15m, 30m, 1h, etc.)
-- **URL**: [https://durations-for-todoist.real-tomer-rosenfeld.workers.dev/](https://done-for-todoist.real-tomer-rosenfeld.workers.dev)
+- **URL**: [https://durations.todoist.rosenpin.io](https://durations.todoist.rosenpin.io)
 
 ## 🏗️ Architecture
 
