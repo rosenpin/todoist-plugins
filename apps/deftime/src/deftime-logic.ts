@@ -54,12 +54,19 @@ export class DefTimeLogic {
     const newDateTime = new Date(dueDate);
     newDateTime.setHours(targetHour, 0, 0, 0);
 
-    // Format as ISO string for Todoist API
-    const isoString = newDateTime.toISOString();
+    // Format as RFC3339 string for Todoist API (YYYY-MM-DDTHH:MM:SS)
+    const year = newDateTime.getFullYear();
+    const month = String(newDateTime.getMonth() + 1).padStart(2, '0');
+    const day = String(newDateTime.getDate()).padStart(2, '0');
+    const hour = String(newDateTime.getHours()).padStart(2, '0');
+    const minute = String(newDateTime.getMinutes()).padStart(2, '0');
+    const second = String(newDateTime.getSeconds()).padStart(2, '0');
+    
+    const rfc3339String = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
     
     Logger.info(`Scheduling task "${task.content}" for ${TimeUtils.formatTimeInTimezone(newDateTime, userTimezone)}`);
     
-    return isoString;
+    return rfc3339String;
   }
 
   /**
@@ -86,7 +93,6 @@ export class DefTimeLogic {
       // Update the task with new time
       await this.todoist.updateTask(taskId, {
         due: {
-          date: task.due!.date,
           datetime: newDateTime,
           timezone: task.due?.timezone
         }

@@ -128,7 +128,13 @@ export class TodoistClient {
 
     if (updates.content) updateData.content = updates.content;
     if (updates.labels) updateData.labels = updates.labels;
-    if (updates.due) updateData.due = updates.due;
+    
+    // Handle due date updates - convert from nested object to flat fields
+    if (updates.due) {
+      if (updates.due.date) updateData.due_date = updates.due.date;
+      if (updates.due.datetime) updateData.due_datetime = updates.due.datetime;
+      if (updates.due.timezone) updateData.due_lang = updates.due.timezone;
+    }
 
     await this.api.updateTask(taskId, updateData);
   }
