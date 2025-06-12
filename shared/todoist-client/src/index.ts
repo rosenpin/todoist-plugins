@@ -35,20 +35,65 @@ export interface TodoistProject {
 
 export class TodoistClient {
   private api: TodoistApi;
+  private token: string;
 
   constructor(token: string) {
+    this.token = token;
     this.api = new TodoistApi(token);
   }
 
   async getUser(): Promise<TodoistUser> {
-    // Note: Todoist API v5.0.0 doesn't provide user endpoints
-    // This is a placeholder - user info should be cached from OAuth flow
-    throw new Error('User info must be cached from OAuth response - API v5.0.0 removed user endpoints');
+    // Try REST API v1 user endpoint first
+    try {
+      const response = await fetch('https://api.todoist.com/rest/v1/user', {
+        headers: {
+          'Authorization': `Bearer ${this.token}`
+        }
+      });
+
+      if (response.ok) {
+        const user = await response.json();
+        return {
+          id: user.id,
+          email: user.email,
+          full_name: user.full_name,
+          timezone: user.timezone
+        };
+      }
+    } catch (error) {
+      console.log('REST API failed, trying Sync API...');
+    }
+
+    // Fallback to Sync API
+    const response = await fetch('https://api.todoist.com/sync/v9/sync', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.token}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: 'sync_token=*&resource_types=["user"]'
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to get user info: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const user = data.user;
+
+    return {
+      id: user.id,
+      email: user.email,
+      full_name: user.full_name,
+      timezone: user.timezone
+    };
   }
 
   async getTasks(filter?: (task: TodoistTask) => boolean): Promise<TodoistTask[]> {
     const tasks = await this.api.getTasks();
-    const mappedTasks = (tasks as unknown as any[]).map((task: any) => ({
+    const tasksArray = Array.isArray(tasks) ? tasks : [];
+    
+    const mappedTasks = tasksArray.map((task: any) => ({
       id: task.id,
       content: task.content,
       project_id: task.projectId,
@@ -80,7 +125,7 @@ export class TodoistClient {
 
   async updateTask(taskId: string, updates: Partial<TodoistTask>): Promise<void> {
     const updateData: any = {};
-    
+
     if (updates.content) updateData.content = updates.content;
     if (updates.labels) updateData.labels = updates.labels;
     if (updates.due) updateData.due = updates.due;
@@ -90,7 +135,11 @@ export class TodoistClient {
 
   async getLabels(): Promise<TodoistLabel[]> {
     const labels = await this.api.getLabels();
-    return (labels as unknown as any[]).map((label: any) => ({
+    
+    // Ensure we have an array - handle the response properly
+    const labelsArray = Array.isArray(labels) ? labels : [];
+    
+    return labelsArray.map((label: any) => ({
       id: label.id,
       name: label.name,
       color: label.color,
@@ -110,7 +159,9 @@ export class TodoistClient {
 
   async getProjects(): Promise<TodoistProject[]> {
     const projects = await this.api.getProjects();
-    return (projects as unknown as any[]).map((project: any) => ({
+    const projectsArray = Array.isArray(projects) ? projects : [];
+    
+    return projectsArray.map((project: any) => ({
       id: project.id,
       name: project.name,
       color: project.color,

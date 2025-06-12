@@ -1,5 +1,5 @@
 export const HTML_TEMPLATES = {
-  INDEX: `<!DOCTYPE html>
+    INDEX: `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -38,7 +38,7 @@ export const HTML_TEMPLATES = {
 </body>
 </html>`,
 
-  SETTINGS: `<!DOCTYPE html>
+    SETTINGS: `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -52,8 +52,8 @@ export const HTML_TEMPLATES = {
         <div class="container mx-auto flex justify-between items-center">
             <span class="font-semibold">Hello {{USER_NAME}}</span>
             <div class="space-x-4">
-                <a href="https://github.com/rosenpin/todoist-monorepo" target="_blank" class="hover:underline">📝 Code</a>
-                <a href="https://github.com/rosenpin/todoist-monorepo/blob/main/README.md" target="_blank" class="hover:underline">❓ Help</a>
+                <a href="https://github.com/rosenpin/todoist-plugins" target="_blank" class="hover:underline">📝 Code</a>
+                <a href="https://github.com/rosenpin/todoist-plugins/blob/main/README.md" target="_blank" class="hover:underline">❓ Help</a>
             </div>
         </div>
     </nav>
@@ -131,12 +131,12 @@ export const HTML_TEMPLATES = {
 };
 
 export function renderTemplate(template: string, variables: Record<string, string>): string {
-  let rendered = template;
-  
-  for (const [key, value] of Object.entries(variables)) {
-    const placeholder = `{{${key}}}`;
-    rendered = rendered.replace(new RegExp(placeholder, 'g'), value);
-  }
-  
-  return rendered;
+    let rendered = template;
+
+    for (const [key, value] of Object.entries(variables)) {
+        const placeholder = `{{${key}}}`;
+        rendered = rendered.replace(new RegExp(placeholder, 'g'), value);
+    }
+
+    return rendered;
 }

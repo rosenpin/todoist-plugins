@@ -1,7 +1,7 @@
 {
-  "name": "todoist-monorepo",
+  "name": "todoist-plugins",
   "version": "1.0.0",
-  "description": "Todoist services monorepo - DefTime, Done, and Durations apps",
+  "description": "Todoist plugins - DefTime, Done, and Durations apps",
   "private": true,
   "workspaces": [
     "apps/*",

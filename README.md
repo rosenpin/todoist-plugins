@@ -1,4 +1,4 @@
-# Todoist Services Monorepo
+# Rosenpin's Todoist Plugins
 
 A collection of productivity-enhancing integrations for Todoist, built with TypeScript and deployed on Cloudflare Workers.
 
@@ -37,7 +37,7 @@ Sets Google Calendar event durations based on Todoist labels.
 ## 📁 Project Structure
 
 ```
-todoist-monorepo/
+todoist-plugins/
 ├── apps/
 │   ├── deftime/     # DefTime app
 │   ├── done/        # Done app
