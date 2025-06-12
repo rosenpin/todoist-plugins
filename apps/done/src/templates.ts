@@ -11,7 +11,7 @@ export const HTML_TEMPLATES = {
 <body class="bg-red-500">
     <div class="container mx-auto px-4 py-16 text-center">
         <h1 class="text-4xl font-bold text-white mb-4">Done For Todoist</h1>
-        <p class="text-white text-lg mb-8">Automatically ~~strikethrough~~ Google Calendar events when they're marked completed in Todoist</p>
+        <p class="text-white text-lg mb-8">Automatically <span style="text-decoration: line-through;">strikethrough</span> Google Calendar events when they're marked completed in Todoist</p>
         
         <div class="mb-8">
             <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2Y5ZmFmYiIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM2YjcyODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkV4YW1wbGU6IFN0cmlrZXRocm91Z2ggRXZlbnQ8L3RleHQ+Cjwvc3ZnPgo=" 
@@ -48,7 +48,7 @@ export const HTML_TEMPLATES = {
     
     <main class="container mx-auto px-4 py-8">
         <div class="max-w-2xl mx-auto">
-            <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Automatically ~~strikethrough~~ completed tasks</h1>
+            <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Automatically <span style="text-decoration: line-through;">strikethrough</span> completed tasks</h1>
             
             <div class="bg-white rounded-lg shadow-md p-6 mb-6">
                 <h2 class="text-xl font-semibold mb-4">✅ Setup Complete</h2>
@@ -67,7 +67,7 @@ export const HTML_TEMPLATES = {
                 <div class="bg-blue-50 border border-blue-200 rounded p-4">
                     <h3 class="font-semibold text-blue-800 mb-2">How it works:</h3>
                     <ul class="text-blue-700 space-y-1">
-                        <li>• When you complete a task in Todoist, it gets ~~strikethrough~~ formatting</li>
+                        <li>• When you complete a task in Todoist, it gets <span style="text-decoration: line-through;">strikethrough</span> formatting</li>
                         <li>• Time components are removed from due dates to clean up your calendar</li>
                         <li>• If you uncomplete a task, the strikethrough is removed</li>
                         <li>• Changes sync to your Google Calendar automatically</li>
