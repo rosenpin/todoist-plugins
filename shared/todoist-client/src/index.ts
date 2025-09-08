@@ -136,7 +136,9 @@ export class TodoistClient {
       if (updates.due.timezone) updateData.due_lang = updates.due.timezone;
     }
 
+    console.log(`[DEBUG] Updating task ${taskId} with data:`, JSON.stringify(updateData));
     await this.api.updateTask(taskId, updateData);
+    console.log(`[DEBUG] Task ${taskId} updated successfully`);
   }
 
   async getLabels(): Promise<TodoistLabel[]> {
