@@ -3,6 +3,7 @@ import { Logger, TimeUtils } from '@shared/utils';
 
 export class DefTimeLogic {
   private todoist: TodoistClient;
+  private cachedUser: { id: string; timezone: string } | null = null;
 
   constructor(token: string) {
     this.todoist = new TodoistClient(token);
@@ -11,8 +12,27 @@ export class DefTimeLogic {
   /**
    * Check if a task already has a time component
    */
-  private hasTime(dateTime?: string): boolean {
+   private hasTime(dateTime?: string): boolean {
     return dateTime ? dateTime.includes(':') : false;
+  }
+
+  /**
+   * Get user timezone with caching to avoid rate limits
+   */
+  private async getUserTimezone(): Promise<string> {
+    if (this.cachedUser) {
+      return this.cachedUser.timezone;
+    }
+
+    try {
+      const user = await this.todoist.getUser();
+      this.cachedUser = { id: user.id, timezone: user.timezone };
+      return user.timezone;
+    } catch (error) {
+      Logger.warn('Failed to get user timezone, using UTC as fallback:', error);
+      // Fallback to UTC if API call fails (rate limit, etc.)
+      return 'UTC';
+    }
   }
 
   /**
@@ -24,9 +44,8 @@ export class DefTimeLogic {
       return null;
     }
 
-    // Get user's timezone from Todoist
-    const user = await this.todoist.getUser();
-    const userTimezone = user.timezone;
+    // Get user's timezone from cache or API
+    const userTimezone = await this.getUserTimezone();
 
     // Check if task already has time
     if (task.due.datetime && this.hasTime(task.due.datetime)) {
