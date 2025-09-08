@@ -101,21 +101,17 @@ export class AuthHandler {
    * Set authentication cookies
    */
   setAuthCookies(response: Response, userId: string, token: string): void {
-    // Set httpOnly cookies for security
-    response.headers.set('Set-Cookie', [
-      `user_id=${userId}; HttpOnly; Path=/; SameSite=Strict; Max-Age=2592000`,
-      `access_token=${token}; HttpOnly; Path=/; SameSite=Strict; Max-Age=2592000`
-    ].join(', '));
+    // Set httpOnly cookies for security - each cookie needs separate Set-Cookie header
+    response.headers.append('Set-Cookie', `user_id=${userId}; HttpOnly; Path=/; SameSite=Lax; Max-Age=2592000`);
+    response.headers.append('Set-Cookie', `access_token=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=2592000`);
   }
 
   /**
    * Clear authentication cookies
    */
   clearAuthCookies(response: Response): void {
-    response.headers.set('Set-Cookie', [
-      'user_id=; HttpOnly; Path=/; SameSite=Strict; Max-Age=0',
-      'access_token=; HttpOnly; Path=/; SameSite=Strict; Max-Age=0'
-    ].join(', '));
+    response.headers.append('Set-Cookie', 'user_id=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0');
+    response.headers.append('Set-Cookie', 'access_token=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0');
   }
 }
 
