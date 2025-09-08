@@ -1,4 +1,4 @@
-import { TodoistApi, UpdateTaskArgs } from '@doist/todoist-api-typescript';
+import { TodoistApi, UpdateTaskArgs, Task as TodoistSDKTask } from '@doist/todoist-api-typescript';
 
 export interface TodoistUser {
   id: string;
@@ -131,8 +131,20 @@ export class TodoistClient {
 
     // Handle due date updates - use correct SDK field names
     if (updates.due) {
-      if (updates.due.date) updateData.dueDate = updates.due.date;
-      if (updates.due.datetime) updateData.dueDatetime = updates.due.datetime;
+      // Use ONLY dueDatetime (not both) when we have a specific datetime
+      if (updates.due.datetime) {
+        updateData.dueDatetime = updates.due.datetime;
+        // Generate a human-readable string for the due date with time
+        const dateObj = new Date(updates.due.datetime);
+        updateData.dueString = `${updates.due.date} at ${dateObj.toLocaleTimeString('en-US', { 
+          hour: 'numeric', 
+          minute: '2-digit',
+          hour12: false 
+        })}`;
+      } else if (updates.due.date) {
+        // Only use dueDate when there's no datetime
+        updateData.dueDate = updates.due.date;
+      }
       if (updates.due.timezone) updateData.dueLang = updates.due.timezone;
     }
 
