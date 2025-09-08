@@ -17,6 +17,11 @@ export interface TodoistTask {
     datetime?: string;
     timezone?: string;
   };
+  duration?:   | null
+       | {
+       amount: number;
+       unit: "minute" | "day";
+     };
 }
 
 export interface TodoistLabel {
@@ -123,6 +128,12 @@ export class TodoistClient {
     };
   }
 
+  async updateTaskOfficial(taskId: string, updates: UpdateTaskArgs): Promise<void> {
+    console.log('Updating task', taskId, updates);
+    await this.api.updateTask(taskId, updates);
+    console.log('Task updated successfully');
+  }
+
   async updateTask(taskId: string, updates: Partial<TodoistTask>): Promise<void> {
     const updateData: UpdateTaskArgs = {};
 
@@ -136,10 +147,10 @@ export class TodoistClient {
         updateData.dueDatetime = updates.due.datetime;
         // Generate a human-readable string for the due date with time
         const dateObj = new Date(updates.due.datetime);
-        updateData.dueString = `${updates.due.date} at ${dateObj.toLocaleTimeString('en-US', { 
-          hour: 'numeric', 
+        updateData.dueString = `${updates.due.date} at ${dateObj.toLocaleTimeString('en-US', {
+          hour: 'numeric',
           minute: '2-digit',
-          hour12: false 
+          hour12: false
         })}`;
       } else if (updates.due.date) {
         // Only use dueDate when there's no datetime

@@ -98,9 +98,13 @@ export class DurationsLogic {
 
       // Update task content with duration annotation
       const newContent = `${task.content} [${duration}m]`;
-      
+
       await this.todoist.updateTask(taskId, {
-        content: newContent
+        content: newContent,
+      });
+      await this.todoist.updateTaskOfficial(taskId, {
+        duration:  duration,
+        durationUnit: 'minute'
       });
 
       Logger.info(`Set duration for task "${task.content}": ${duration} minutes`);
@@ -120,10 +124,10 @@ export class DurationsLogic {
 
       // Get all tasks
       const tasks = await this.todoist.getTasks();
-      
+
       // Filter relevant tasks
       const relevantTasks = tasks.filter(task => this.isTaskRelevant(task));
-      
+
       Logger.info(`Processing ${relevantTasks.length} relevant tasks for duration setting`);
 
       for (const task of relevantTasks) {
