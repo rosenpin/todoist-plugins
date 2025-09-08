@@ -21,17 +21,23 @@ export class DefTimeLogic {
    */
   private async getUserTimezone(): Promise<string> {
     if (this.cachedUser) {
+      Logger.debug(`Using cached user timezone: ${this.cachedUser.timezone}`);
       return this.cachedUser.timezone;
     }
 
     try {
       const user = await this.todoist.getUser();
-      this.cachedUser = { id: user.id, timezone: user.timezone };
-      return user.timezone;
+      Logger.debug(`Full user object:`, JSON.stringify(user));
+      
+      // Todoist API doesn't provide timezone in user object, use default
+      const defaultTimezone = 'Asia/Jerusalem'; // Default to Israel timezone
+      this.cachedUser = { id: user.id, timezone: defaultTimezone };
+      Logger.debug(`Using default timezone: ${defaultTimezone}`);
+      return defaultTimezone;
     } catch (error) {
-      Logger.warn('Failed to get user timezone, using UTC as fallback:', error);
-      // Fallback to UTC if API call fails (rate limit, etc.)
-      return 'UTC';
+      Logger.warn('Failed to get user info, using Asia/Jerusalem as fallback:', error);
+      // Fallback timezone if API call fails
+      return 'Asia/Jerusalem';
     }
   }
 
@@ -113,6 +119,7 @@ export class DefTimeLogic {
 
       // Get the task
       const task = await this.todoist.getTask(taskId);
+      Logger.debug(`Full task object:`, JSON.stringify(task));
       
       // Generate new time
       const newDateTime = await this.generateTimeForTask(task);
@@ -121,12 +128,15 @@ export class DefTimeLogic {
         return; // Nothing to update
       }
 
+      // Get user timezone for the update
+      const userTimezone = await this.getUserTimezone();
+
       // Update the task with new time
       await this.todoist.updateTask(taskId, {
         due: {
           date: task.due!.date,
           datetime: newDateTime,
-          timezone: task.due?.timezone
+          timezone: userTimezone
         }
       });
 
