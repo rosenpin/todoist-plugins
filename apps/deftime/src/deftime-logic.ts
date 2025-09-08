@@ -53,39 +53,51 @@ export class DefTimeLogic {
       return null;
     }
 
+    // Get current time in user's timezone
+    const now = new Date();
+    const userNow = new Date(now.toLocaleString("en-US", {timeZone: userTimezone}));
+    const currentHour = userNow.getHours();
+    
     // Parse the due date
     const dueDate = new Date(task.due.date);
-    const today = new Date();
+    const todayInUserTz = new Date(now.toLocaleDateString("en-US", {timeZone: userTimezone}));
     
     let targetHour: number;
     
-    // If the task is due today and it's already past 8 AM, schedule for later in the day
-    if (dueDate.toDateString() === today.toDateString() && today.getHours() >= 8) {
-      // Schedule 1-16 hours from now (but not past midnight)
-      const hoursFromNow = Math.floor(Math.random() * Math.min(16, 24 - today.getHours())) + 1;
-      targetHour = Math.min(today.getHours() + hoursFromNow, 23);
+    // Check if task is due today
+    if (dueDate.toDateString() === todayInUserTz.toDateString()) {
+      // Task is due today - schedule between current hour+1 and 18, or at 18 if past 18
+      if (currentHour >= 18) {
+        targetHour = 18;
+      } else {
+        // Schedule randomly between (currentHour + 1) and 18
+        const minHour = Math.max(currentHour + 1, 9); // Never before 9am
+        const maxHour = 18;
+        targetHour = Math.floor(Math.random() * (maxHour - minHour + 1)) + minHour;
+      }
     } else {
-      // Schedule between 8-11 AM (as per original logic)
-      targetHour = 8 + Math.floor(Math.random() * 3);
+      // Task is due on a different day - schedule between 9-18
+      targetHour = Math.floor(Math.random() * (18 - 9 + 1)) + 9;
     }
 
-    // Create the new datetime in user's timezone
-    const newDateTime = new Date(dueDate);
-    newDateTime.setHours(targetHour, 0, 0, 0);
+    // Create the new datetime - parse the due date and set the time
+    const taskDateTime = new Date(task.due.date + 'T00:00:00');
+    taskDateTime.setHours(targetHour, 0, 0, 0);
 
-    // Format as RFC3339 string for Todoist API (YYYY-MM-DDTHH:MM:SS)
-    const year = newDateTime.getFullYear();
-    const month = String(newDateTime.getMonth() + 1).padStart(2, '0');
-    const day = String(newDateTime.getDate()).padStart(2, '0');
-    const hour = String(newDateTime.getHours()).padStart(2, '0');
-    const minute = String(newDateTime.getMinutes()).padStart(2, '0');
-    const second = String(newDateTime.getSeconds()).padStart(2, '0');
+    // Convert to RFC3339 format in user timezone (without Z suffix for local time)
+    const year = taskDateTime.getFullYear();
+    const month = String(taskDateTime.getMonth() + 1).padStart(2, '0');
+    const day = String(taskDateTime.getDate()).padStart(2, '0');
+    const hour = String(taskDateTime.getHours()).padStart(2, '0');
+    const minute = String(taskDateTime.getMinutes()).padStart(2, '0');
+    const second = String(taskDateTime.getSeconds()).padStart(2, '0');
     
-    const rfc3339String = `${year}-${month}-${day}T${hour}:${minute}:${second}Z`;
+    // Format as local datetime (without Z - Todoist API handles timezone conversion)
+    const datetimeString = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
     
-    Logger.info(`Scheduling task "${task.content}" for ${TimeUtils.formatTimeInTimezone(newDateTime, userTimezone)}`);
+    Logger.info(`Scheduling task "${task.content}" for ${targetHour}:00 in timezone ${userTimezone}`);
     
-    return rfc3339String;
+    return datetimeString;
   }
 
   /**
