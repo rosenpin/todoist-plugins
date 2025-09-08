@@ -1,4 +1,4 @@
-import { TodoistApi } from '@doist/todoist-api-typescript';
+import { TodoistApi, UpdateTaskArgs } from '@doist/todoist-api-typescript';
 
 export interface TodoistUser {
   id: string;
@@ -92,7 +92,7 @@ export class TodoistClient {
   async getTasks(filter?: (task: TodoistTask) => boolean): Promise<TodoistTask[]> {
     const tasks = await this.api.getTasks();
     const tasksArray = Array.isArray(tasks) ? tasks : [];
-    
+
     const mappedTasks = tasksArray.map((task: any) => ({
       id: task.id,
       content: task.content,
@@ -124,16 +124,16 @@ export class TodoistClient {
   }
 
   async updateTask(taskId: string, updates: Partial<TodoistTask>): Promise<void> {
-    const updateData: any = {};
+    const updateData: UpdateTaskArgs = {};
 
     if (updates.content) updateData.content = updates.content;
     if (updates.labels) updateData.labels = updates.labels;
-    
-    // Handle due date updates - convert from nested object to flat fields
+
+    // Handle due date updates - use correct SDK field names
     if (updates.due) {
-      if (updates.due.date) updateData.due_date = updates.due.date;
-      if (updates.due.datetime) updateData.due_datetime = updates.due.datetime;
-      if (updates.due.timezone) updateData.due_lang = updates.due.timezone;
+      if (updates.due.date) updateData.dueDate = updates.due.date;
+      if (updates.due.datetime) updateData.dueDatetime = updates.due.datetime;
+      if (updates.due.timezone) updateData.dueLang = updates.due.timezone;
     }
 
     console.log(`[DEBUG] Updating task ${taskId} with data:`, JSON.stringify(updateData));
@@ -143,10 +143,10 @@ export class TodoistClient {
 
   async getLabels(): Promise<TodoistLabel[]> {
     const labels = await this.api.getLabels();
-    
+
     // Ensure we have an array - handle the response properly
     const labelsArray = Array.isArray(labels) ? labels : [];
-    
+
     return labelsArray.map((label: any) => ({
       id: label.id,
       name: label.name,
@@ -168,7 +168,7 @@ export class TodoistClient {
   async getProjects(): Promise<TodoistProject[]> {
     const projects = await this.api.getProjects();
     const projectsArray = Array.isArray(projects) ? projects : [];
-    
+
     return projectsArray.map((project: any) => ({
       id: project.id,
       name: project.name,

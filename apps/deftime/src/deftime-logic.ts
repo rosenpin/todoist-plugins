@@ -81,7 +81,7 @@ export class DefTimeLogic {
     const minute = String(newDateTime.getMinutes()).padStart(2, '0');
     const second = String(newDateTime.getSeconds()).padStart(2, '0');
     
-    const rfc3339String = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+    const rfc3339String = `${year}-${month}-${day}T${hour}:${minute}:${second}Z`;
     
     Logger.info(`Scheduling task "${task.content}" for ${TimeUtils.formatTimeInTimezone(newDateTime, userTimezone)}`);
     
