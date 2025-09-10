@@ -1,6 +1,7 @@
 name = "deftime-for-todoist"
 main = "src/index.ts"
-compatibility_date = "2023-12-01"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
 
 [env.development]
 name = "deftime-for-todoist-dev"

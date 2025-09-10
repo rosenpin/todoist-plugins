@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { AuthHandler } from '@shared/auth';
 import { UserDatabase } from '@shared/db';
-import { Logger, createResponse, createRedirectResponse, HTTP_CODES, TODOIST_SCOPES } from '@shared/utils';
+import { Logger, createResponse, createRedirectResponse, createJSONResponse, HTTP_CODES, TODOIST_SCOPES, isValidTimezone } from '@shared/utils';
 import { TodoistClient } from '@shared/todoist-client';
 import { DefTimeLogic } from './deftime-logic';
 import { HTML_TEMPLATES, renderTemplate } from './templates';
@@ -120,13 +120,51 @@ app.get('/settings', async (c) => {
     }
 
     const html = renderTemplate(HTML_TEMPLATES.SETTINGS, {
-      USER_NAME: user.full_name
+      USER_NAME: user.full_name,
+      USER_TIMEZONE: user.timezone || 'Not set'
     });
 
     return createResponse(html);
   } catch (error) {
     Logger.error('Error serving settings page:', error);
     return createResponse('Server error', HTTP_CODES.INTERNAL_SERVER_ERROR);
+  }
+});
+
+// Update timezone setting
+app.post('/settings/timezone', async (c) => {
+  try {
+    const authHandler = getAuthHandler(c.env!);
+    const db = new UserDatabase(c.env!.DB);
+    
+    const userId = authHandler.getUserIdFromCookie(c);
+    if (!userId) {
+      return createJSONResponse({ error: 'Unauthorized' }, HTTP_CODES.UNAUTHORIZED);
+    }
+
+    const user = await db.getUserById(userId);
+    if (!user) {
+      return createJSONResponse({ error: 'User not found' }, HTTP_CODES.NOT_FOUND);
+    }
+
+    const body = await c.req.json();
+    const timezone = body.timezone;
+
+    Logger.debug(`[TIMEZONE] Received timezone: ${timezone}`);
+    Logger.debug(`[TIMEZONE] Timezone validation result: ${isValidTimezone(timezone)}`);
+
+    if (!timezone || !isValidTimezone(timezone)) {
+      Logger.error(`[TIMEZONE] Invalid timezone received: ${timezone}`);
+      return createJSONResponse({ error: 'Invalid timezone' }, HTTP_CODES.BAD_REQUEST);
+    }
+
+    await db.updateUserTimezone(userId, timezone);
+    Logger.info(`Updated timezone for user ${userId} to ${timezone}`);
+
+    return createJSONResponse({ success: true, timezone });
+  } catch (error) {
+    Logger.error('Error updating timezone:', error);
+    return createJSONResponse({ error: 'Failed to update timezone' }, HTTP_CODES.INTERNAL_SERVER_ERROR);
   }
 });
 
@@ -174,7 +212,7 @@ app.post('/webhook', async (c) => {
     }
 
     // Process the task asynchronously
-    const defTime = new DefTimeLogic(user.access_token);
+    const defTime = new DefTimeLogic(user.access_token, db);
     
     // Run in the background (Workers will handle this)
     c.executionCtx.waitUntil(

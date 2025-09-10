@@ -10,5 +10,8 @@
   },
   "devDependencies": {
     "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "timezonecomplete": "^5.15.0"
   }
 }

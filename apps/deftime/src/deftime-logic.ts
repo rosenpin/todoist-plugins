@@ -1,12 +1,15 @@
 import { TodoistClient, TodoistTask } from '@shared/todoist-client';
-import { Logger, TimeUtils } from '@shared/utils';
+import { Logger, TimeUtils, getHourInTimezone } from '@shared/utils';
+import { UserDatabase } from '@shared/db';
 
 export class DefTimeLogic {
   private todoist: TodoistClient;
   private cachedUser: { id: string; timezone: string } | null = null;
+  private db: UserDatabase;
 
-  constructor(token: string) {
+  constructor(token: string, db: UserDatabase) {
     this.todoist = new TodoistClient(token);
+    this.db = db;
   }
 
   /**
@@ -17,7 +20,7 @@ export class DefTimeLogic {
   }
 
   /**
-   * Get user timezone with caching to avoid rate limits
+   * Get user timezone from database with caching
    */
   private async getUserTimezone(): Promise<string> {
     if (this.cachedUser) {
@@ -27,17 +30,25 @@ export class DefTimeLogic {
 
     try {
       const user = await this.todoist.getUser();
-      Logger.debug(`Full user object:`, JSON.stringify(user));
+      Logger.debug(`Getting timezone for user: ${user.id}`);
       
-      // Todoist API doesn't provide timezone in user object, use default
-      const defaultTimezone = 'Asia/Jerusalem'; // Default to Israel timezone
-      this.cachedUser = { id: user.id, timezone: defaultTimezone };
-      Logger.debug(`Using default timezone: ${defaultTimezone}`);
-      return defaultTimezone;
+      // Get user from database to check for configured timezone
+      const dbUser = await this.db.getUserById(user.id);
+      Logger.debug(`Database user object:`, JSON.stringify(dbUser));
+      let userTimezone = 'UTC'; // Default fallback
+      
+      if (dbUser && dbUser.timezone) {
+        userTimezone = dbUser.timezone;
+        Logger.debug(`Using database timezone: ${userTimezone}`);
+      } else {
+        Logger.debug(`No timezone configured for user ${user.id}, using UTC default`);
+      }
+      
+      this.cachedUser = { id: user.id, timezone: userTimezone };
+      return userTimezone;
     } catch (error) {
-      Logger.warn('Failed to get user info, using Asia/Jerusalem as fallback:', error);
-      // Fallback timezone if API call fails
-      return 'Asia/Jerusalem';
+      Logger.warn('Failed to get user timezone, using UTC as fallback:', error);
+      return 'UTC';
     }
   }
 
@@ -59,10 +70,8 @@ export class DefTimeLogic {
       return null;
     }
 
-    // Get current time in user's timezone
-    const now = new Date();
-    const userNow = new Date(now.toLocaleString("en-US", {timeZone: userTimezone}));
-    const currentHour = userNow.getHours();
+    // Get current time in user's timezone using the timezone utility
+    const currentHour = getHourInTimezone(userTimezone);
     
     // Parse the due date
     const dueDate = new Date(task.due.date);
